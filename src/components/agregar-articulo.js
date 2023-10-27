@@ -1,8 +1,8 @@
 import { LitElement, css, html } from "lit";
 
-import style from "./css/styles-blog";
+import style from "./css/styles-agregar";
 
-export class EditarArticulo extends LitElement {
+export class AgregarArticulo extends LitElement {
   static get styles() {
     return [
       style,
@@ -11,78 +11,57 @@ export class EditarArticulo extends LitElement {
           width: 100%;
           height 100%;
         }
-        textarea{
-
-        }
       `,
     ];
   }
 
   static get properties() {
     return {
-      id: { type: String },
       articulo: { type: Object },
     };
   }
 
   constructor() {
     super();
-    this.id = "";
-    this.articulo = {};
+    this.articulo = {
+      id: "",
+      titulo: "",
+      autor: "",
+      contenido: {
+        tema: "",
+        texto: "",
+        imagen: "",
+        imagenActualizada: "",
+        palabrasClave: [],
+      },
+      fecha: "",
+      fechaActualizacion: "",
+    };
   }
 
   render() {
-    return html`${this._mostrarEditar()}`;
+    return html`${this._mostrarAgregar()}`;
   }
 
-  _mostrarEditar() {
+  _mostrarAgregar() {
     return html`
-      <section class="contenedor-editar">
-        <form class="formulario-editar">
+      <section class="contenedor-agregar">
+        <form class="formulario-agregar">
           <fieldset class="fieldset-contenedor">
-            <legend><h4>Editar Artículo</h4></legend>
+            <legend><h4>Agregar Artículo</h4></legend>
             <fieldset class="informacion-articulo">
               <legend>Información del artículo</legend>
               <label>Título:</label>
-              <input
-                name="titulo"
-                type="text"
-                value="${this.articulo.titulo}"
-              />
+              <input name="titulo" type="text" />
               <label>Autor:</label>
-              <input
-                name="autor"
-                type="text"
-                value="${this.articulo.autor}"
-                disabled
-              />
-              <label class="fecha">Fecha publicación:</label>
-              <input
-                class="fecha"
-                type="text"
-                value="${this.articulo.fecha}"
-                name="fecha"
-                disabled
-              />
-              <label class="fecha">Fecha Actualizacion:</label>
-              <input
-                name="fechaActualizacion"
-                class="fecha"
-                type="text"
-                value="${this.articulo.fechaActualizacion}"
-                disabled
-              />
+              <input name="autor" type="text" />
             </fieldset>
             <fieldset class="contenido-articulo">
               <legend>Contenido del artículo</legend>
               <label>Tema:</label>
-              <input
-                name="tema"
-                type="text"
-                value="${this.articulo.contenido.tema}"
-              />
+              <input name="tema" type="text" />
               <label>Texto:</label>
-              <textarea .value="${this.articulo.contenido.texto}"></textarea>
+              <textarea id="text-area"></textarea>
             </fieldset>
             <section class="etiquetas-contenedor">
               <section class="entrada">
@@ -121,23 +100,18 @@ export class EditarArticulo extends LitElement {
             <section class="imagen">
               <label for="imagen">Seleccionar imagen:</label>
               <input
-                data-id="${this.articulo.id}"
                 name="imagen"
                 type="file"
                 accept=".jpg, .jepg, .png"
                 id="entradaImagen"
                 @change="${this._procesarImagen}"
               />
-              <img
-                src="${this.articulo.contenido.imagenActualizada !== ""
-                  ? this.articulo.contenido.imagenActualizada
-                  : this.articulo.contenido.imagen}"
-              />
+              <img src="${this.articulo.contenido.imagen}" />
               <input
                 class="btn actualizar"
                 type="button"
-                @click="${this._actualizar}"
-                value="Actualizar"
+                @click="${this._agregar}"
+                value="Agregar"
               />
             </section>
           </fieldset>
@@ -187,7 +161,7 @@ export class EditarArticulo extends LitElement {
     if (imagen.type.match(/image.*/i)) {
       reader = new FileReader();
       reader.addEventListener("load", (evt) => {
-        this.articulo.contenido.imagenActualizada = evt.target.result;
+        this.articulo.contenido.imagen = evt.target.result;
         this.update();
       });
       reader.readAsDataURL(imagen);
@@ -196,7 +170,7 @@ export class EditarArticulo extends LitElement {
     }
   }
 
-  _actualizar(e) {
+  _agregar(e) {
     let errores = [];
     const inputs = [...this.shadowRoot.querySelectorAll("input")];
     const textArea = this.shadowRoot.querySelector("textarea");
@@ -244,12 +218,28 @@ export class EditarArticulo extends LitElement {
       }
     });
 
+    let id;
+
+    if (window.localStorage.length === 0) {
+      id = Math.floor(Math.random() * 100);
+    } else {
+      let articulos = [...JSON.parse(window.localStorage.getItem("articulos"))];
+      if (articulos.some((articulo) => articulo.id === id)) {
+        while (articulos.some((articulo) => articulo.id === id)) {
+          id = Math.floor(Math.random() * 100);
+        }
+      } else {
+        id = Math.floor(Math.random() * 100);
+      }
+    }
+
     if (errores.length === 0) {
       let articulo = this.articulo;
       let seleccion = "consultar";
-      this.articulo.fechaActualizacion = new Date().toISOString().slice(0, 10);
+      this.articulo.id = id;
+      this.articulo.fecha = new Date().toISOString().slice(0, 10);
       this.dispatchEvent(
-        new CustomEvent("editar", {
+        new CustomEvent("agregar", {
           detail: { articulo, seleccion },
           boobles: true,
           composed: true,
@@ -259,4 +249,4 @@ export class EditarArticulo extends LitElement {
   }
 }
 
-customElements.define("editar-articulo", EditarArticulo);
+customElements.define("agregar-articulo", AgregarArticulo);

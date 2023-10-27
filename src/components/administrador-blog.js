@@ -3,6 +3,7 @@ import { LitElement, html, css } from "lit";
 import style from "./css/styles-blog";
 import "./consultar-articulos.js";
 import "./editar-articulo.js";
+import "./agregar-articulo.js";
 
 export class AdministradorBlog extends LitElement {
   static get styles() {
@@ -12,19 +13,18 @@ export class AdministradorBlog extends LitElement {
   static get properties() {
     return {
       articulos: { type: Array },
-      seleccion: { type: String, Reflect: true },
-      localStorage: { type: String },
+      seleccion: { type: String },
     };
   }
 
   constructor() {
     super();
     this.seleccion = "";
-    window.localStorage.setItem(
-      "articulos",
-      '[{"id":"1","titulo":"Prueba","autor":"Arturo Contreras","contenido":{"tema":"prueba","texto":"Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores voluptatum error debitis? Sed consectetur vitae perspiciatis tenetur laboriosam aliquam ipsam magnam veritatis? Molestias, ipsum quisquam! Maxime ipsam repellendus dicta odit.","imagen":"","imagenActualizada":"","palabrasClave":["hola","hola2"]},"fecha":"2023-01-01","fechaActualizacion":""},{"id":"2","titulo":"Prueba 2","autor":"arturo 2","contenido":{"tema":"","texto":"Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores voluptatum error debitis? Sed consectetur vitae perspiciatis tenetur laboriosam aliquam ipsam magnam veritatis? Molestias, ipsum quisquam! Maxime ipsam repellendus dicta odit.","imagen":"","imagenActualizada":"","palabrasClave":[]},"fecha":"2023-02-01","fechaActualizacion":""}]'
-    );
-    this.articulos = JSON.parse(window.localStorage.getItem("articulos"));
+    window.localStorage.length === 0
+      ? (this.articulos = [])
+      : (this.articulos = [
+          ...JSON.parse(window.localStorage.getItem("articulos")),
+        ]);
   }
 
   render() {
@@ -44,8 +44,21 @@ export class AdministradorBlog extends LitElement {
       >
         Consular artículos
       </a>
-      <a class="button" @click="${this._agregarArticulo}" href="#">
+      <a class="button" @click="${() => (this.seleccion = "agregar")}" href="#">
         Agregar artículo
+      </a>
+      <a
+        class="button"
+        @click="${() => {
+          window.localStorage.clear();
+          console.log(window.localStorage);
+          this.articulos = [];
+          this.articulo = {};
+          this.seleccion = "";
+        }}"
+        href="#"
+      >
+        Vaciar LS
       </a>
     </aside> `;
   }
@@ -74,7 +87,9 @@ export class AdministradorBlog extends LitElement {
         }"></consultar-asticulos>`;
         break;
       case "agregar":
-        return this._agregarArticulo();
+        return html`<agregar-articulo
+          @agregar="${this._agregar}"
+        ></agregar-articulo>`;
         break;
       case "editar":
         return html`<editar-articulo
@@ -86,10 +101,12 @@ export class AdministradorBlog extends LitElement {
     }
   }
 
-  _agregarArticulo() {
-    console.log(this.localStorage);
-    this.seleccion = "agregar";
-    return html`<p>Hola</p>`;
+  _agregar(e) {
+    let articulo = e.detail.articulo;
+    this.articulos = [...this.articulos, articulo];
+
+    window.localStorage.setItem("articulos", JSON.stringify(this.articulos));
+    this.seleccion = e.detail.seleccion;
   }
 
   _editar(e) {
@@ -99,7 +116,7 @@ export class AdministradorBlog extends LitElement {
     );
 
     this.articulos[indice] = articulo;
-    window.localStorage.setItem("articulo", JSON.stringify(this.articulos));
+    window.localStorage.setItem("articulos", JSON.stringify(this.articulos));
     this.seleccion = e.detail.seleccion;
   }
 }
