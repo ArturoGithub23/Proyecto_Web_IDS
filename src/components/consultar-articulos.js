@@ -223,8 +223,9 @@ export class ConsultarArticulos extends LitElement {
       id = e.target.parentNode.parentNode.dataset.id;
     }
 
-    console.log(id);
-    let indice = this.articulos.findIndex((registro) => registro.id === id);
+    let indice = this.articulos.findIndex(
+      (registro) => registro.id === Number(id)
+    );
     this.articulos.splice(indice, 1);
     this.articulos = [...this.articulos];
 
