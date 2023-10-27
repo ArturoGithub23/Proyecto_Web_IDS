@@ -58,7 +58,9 @@ export class AdministradorBlog extends LitElement {
         }}"
         href="#"
       >
-        Vaciar LS
+        Vaciar LS </a
+      ><a class="button" @click="${this._cerrarSesion}" href="#">
+        Cerrar Sesión
       </a>
     </aside> `;
   }
@@ -118,6 +120,11 @@ export class AdministradorBlog extends LitElement {
     this.articulos[indice] = articulo;
     window.localStorage.setItem("articulos", JSON.stringify(this.articulos));
     this.seleccion = e.detail.seleccion;
+  }
+
+  _cerrarSesion() {
+    let login = false;
+    this.dispatchEvent(new CustomEvent("cerrar"));
   }
 }
 

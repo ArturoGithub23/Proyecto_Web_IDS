@@ -62,12 +62,18 @@ class ProyectoWeb extends LitElement {
       ? html`<login-component
           @valido="${this._usuarioValido}"
         ></login-component>`
-      : html`<administrador-blog></administrador-blog>`}`;
+      : html`<administrador-blog
+          @cerrar="${this._cerrarSesion}"
+        ></administrador-blog>`}`;
   }
 
   _usuarioValido(e) {
     this.login = e.detail.bool;
     e.detail.bool = false;
+  }
+
+  _cerrarSesion() {
+    this.login = false;
   }
 }
 
