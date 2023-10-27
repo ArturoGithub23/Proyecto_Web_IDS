@@ -28,7 +28,7 @@ export class LoginComponent extends LitElement {
   }
 
   render() {
-    return html` ${this._mostrarHtml()} `;
+    return this._mostrarHtml();
   }
 
   _mostrarHtml() {
