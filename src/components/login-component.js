@@ -99,7 +99,7 @@ export class LoginComponent extends LitElement {
   }
 
   _obtenerDatos() {
-    let url = "http://127.0.0.1:5500/proyecto-web/assets/datos/usuarios.JSON";
+    let url = "http://localhost:8000/assets/datos/usuarios.JSON";
     let metodo = "GET";
 
     fetch(url, { method: metodo })
