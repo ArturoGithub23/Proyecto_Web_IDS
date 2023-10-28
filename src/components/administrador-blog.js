@@ -76,7 +76,7 @@ export class AdministradorBlog extends LitElement {
     if (valor.includes("editar_")) {
       id = valor.slice(7);
       valor = valor.slice(0, 6);
-      articulo = this.articulos.find((elemento) => elemento.id === id);
+      articulo = this.articulos.find((elemento) => elemento.id === Number(id));
     }
 
     switch (valor) {
@@ -119,6 +119,7 @@ export class AdministradorBlog extends LitElement {
 
     this.articulos[indice] = articulo;
     window.localStorage.setItem("articulos", JSON.stringify(this.articulos));
+    console.log(e.detail.seleccion);
     this.seleccion = e.detail.seleccion;
   }
 
