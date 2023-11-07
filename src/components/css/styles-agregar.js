@@ -28,7 +28,6 @@ export default css`
   .button:hover {
     font-weight: bold;
   }
-  
   svg{
     width: 20px;
   }
@@ -37,24 +36,20 @@ export default css`
     height: 100%;
     padding: 10px;
   }
-
   .contenedor-agregar .fieldset-contenedor {
     width: 100%;
     height: 100%;
   }
-
   .contenedor-agregar fieldset {
     margin: 0;
     padding: 10px;
     border: none;
     height: 300px;
   }
-
   .formulario-agregar {
     width: 100%;
     height: 100%;
   }
-
   .contenedor-agregar input,
   label,
   textarea {
@@ -62,17 +57,14 @@ export default css`
     display: block;
     margin-bottom: 5px;
   }
-
   .contenedor-agregar input {
     margin-bottom: 15px;
     border: none;
   }
-
   .contenedor-agregar .fecha {
     display: inline-block;
     width: 48%;
   }
-
   .contenedor-agregar fieldset legend {
     width: 100%;
     text-align: center;
@@ -80,11 +72,9 @@ export default css`
   .contenedor-agregar section {
     padding: 10px;
   }
-
   .informacion-articulo label:first-of-type {
     margin-top: 20px;
   }
-
   textarea {
     height: 150px;
     resize:none;
@@ -92,17 +82,14 @@ export default css`
   #cross {
     width: 15px;
   }
-
   .etiquetas-contenedor{
     display:flex;
     width:100%;
     height:100%;
   }
-
   .etiquetas-contenedor .entrada {
     width:35%;
   }
-
   .etiquetas-contenedor label, .etiquetas-contenedor input {
     display: inline-block;
     width: 100%;
@@ -114,19 +101,16 @@ export default css`
     border-radius: 10px;
     width:70%;
     height:270px;
-
   }
   .etiquetas .scroll {
     height: 100%;
     overflow: scroll;
   }
-
   .etiquetas p {
     display: inline-block;
     margin: 5px 0;
     width: 80%;
   }
-
   .imagen img {
     display: inline-block;
     width: 150px;
@@ -137,7 +121,6 @@ export default css`
     width: 100px; 
     margin-left: 60px;
   }
-  
   @media (max-width: 560px) {
     main {
       display: flex;
@@ -150,7 +133,6 @@ export default css`
       justify-content: space-evenly;
     }
   }
-
   @media (min-width: 560px) and (max-width: 1200px) {
     aside {
       width: 19%;
@@ -167,13 +149,15 @@ export default css`
     .contenido-articulo {
       width: 100%;
     }
-  }
 
+    .informacion-articulo {
+      height: 100px;
+    }
+  }
   @media (min-width: 1200px) {
     aside {
       width: 17%;
     }
-
    .formulario-agregar .fieldset-contenedor {
       display: grid;
       grid-template-columns: 1fr 1fr;
