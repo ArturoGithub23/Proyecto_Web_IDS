@@ -214,9 +214,6 @@ export default css`
       flex-direction: row;
       justify-content: space-evenly;
     }
-    .informacion-articulo{
-      height: 200px;
-    }
   }
 
   @media (min-width: 560px) and (max-width: 1200px) {

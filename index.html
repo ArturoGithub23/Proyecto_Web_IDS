@@ -7,8 +7,13 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta name="Description" content="Put your description here." />
-    <base href="/" />
 
+    <meta
+      name="google-signin-client_id"
+      content="759465108181-i6sd11pnfpm3fdhd93pa32j6m1apjdr0.apps.googleusercontent.com"
+    />
+
+    <base href="/" />
     <style>
       html,
       body {
@@ -19,13 +24,55 @@
         width: 100vw;
         height: 100vh;
       }
+      #btn_google {
+        width: 100% !important;
+      }
     </style>
     <title>proyecto-web</title>
+
+    <script src="https://accounts.google.com/gsi/client" async></script>
   </head>
 
   <body>
-    <proyecto-web></proyecto-web>
+    <proyecto-web>
+      <section slot="login" id="btn_google">
+        <div
+          id="g_id_onload"
+          data-client_id="759465108181-i6sd11pnfpm3fdhd93pa32j6m1apjdr0.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-callback="handleCredentialResponse"
+          data-auto_prompt="false"
+        ></div>
+
+        <div
+          class="g_id_signin"
+          data-type="standard"
+          data-shape="rectangular"
+          data-theme="outline"
+          data-text="signin_with"
+          data-size="large"
+          data-logo_alignment="left"
+        ></div>
+      </section>
+    </proyecto-web>
 
     <script type="module" src="./src/proyecto-web.js"></script>
+    <script>
+      function handleCredentialResponse(response) {
+        google(response);
+      }
+
+      function google(datos) {
+        let event = document.querySelector("#btn_google");
+        event.dispatchEvent(
+          new CustomEvent("google", {
+            detail: { datos },
+            bubbles: true,
+            composed: true,
+          })
+        );
+      }
+    </script>
   </body>
 </html>

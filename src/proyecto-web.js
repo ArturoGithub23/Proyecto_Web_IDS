@@ -34,6 +34,9 @@ class ProyectoWeb extends LitElement {
       administrador-blog {
         height: 95%;
       }
+      .abcRioButton {
+        width: 100% !important;
+      }
     `;
   }
 
@@ -59,9 +62,9 @@ class ProyectoWeb extends LitElement {
   _mostrarHtml() {
     return html` ${this._header()}
     ${!this.login
-      ? html`<login-component
-          @valido="${this._usuarioValido}"
-        ></login-component>`
+      ? html`<login-component @valido="${this._usuarioValido}">
+          <slot name="login" slot="login"></slot>
+        </login-component>`
       : html`<administrador-blog
           @cerrar="${this._cerrarSesion}"
         ></administrador-blog>`}`;

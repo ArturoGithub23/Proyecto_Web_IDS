@@ -1,16 +1,16 @@
 import { LitElement, css, html } from "lit";
 
 import style from "./css/styles-login";
-
 export class LoginComponent extends LitElement {
   static get styles() {
-    return style;
+    return [style];
   }
 
   static get properties() {
     return {
       error: { type: String },
       datos: { type: Array },
+      google_id: { type: String },
     };
   }
 
@@ -21,6 +21,8 @@ export class LoginComponent extends LitElement {
     });
     this.error = "";
     this.datos = [];
+    this.google_id = "";
+    this.addEventListener("google", (e) => this._validarGoogle(e));
   }
 
   firstUpdated() {
@@ -48,6 +50,8 @@ export class LoginComponent extends LitElement {
             value="Login"
           />
         </form>
+        <br />
+        <slot name="login" @click="${this._imprimir}"></slot>
       </section>
     `;
   }
@@ -113,6 +117,17 @@ export class LoginComponent extends LitElement {
       .catch((error) => {
         console.warn("Error al consular datos", error);
       });
+  }
+
+  _imprimir(e) {
+    console.log(e);
+  }
+
+  _validarGoogle(e) {
+    console.log(e.detail.datos);
+    let credencial = e.detail.datos;
+
+    console.log(atob(credencial));
   }
 }
 

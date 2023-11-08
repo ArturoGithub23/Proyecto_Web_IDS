@@ -9,7 +9,7 @@ export default css`
   :host {
     display: block;
     width: 100%;
-    height: 100%
+    height: 100%;
     min-height: 50px;
   }
   p {
@@ -21,9 +21,9 @@ export default css`
     color: white;
   }
   .login {
-    display:block;
+    display: block;
     width: 330px;
-    height: 350px;
+    height: 400px;
     margin: 50px auto;
     border: 1px solid white;
     border-radius: 10px;
