@@ -1,8 +1,8 @@
 {
   "usuarios": [
     {
-      "nombre": "Arturo",
-      "apellido": "Contreras",
+      "nombre": "",
+      "apellido": "",
       "email": "correo@correo.com",
       "pass": "12345678"
     }
