@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 
-import style from "./css/styles-login";
+import style from "./login-style-component";
 export class LoginComponent extends LitElement {
   static get styles() {
     return [style];
@@ -85,21 +85,22 @@ export class LoginComponent extends LitElement {
 
     this.datos.forEach((usuario) => {
       usuario.email === email && usuario.pass === password
-        ? this._loginValido()
+        ? this._loginValido(usuario)
         : (this.error = html`<p>Usuario no encontrado</p>`);
     });
   }
 
-  _loginValido() {
-    let bool = true;
+  _loginValido(usuario) {
+    let usr = { nombre: usuario.nombre, apellido: usuario.apellido };
+    window.sessionStorage.setItem("usuario", JSON.stringify(usr));
+    let view = "admin";
     this.dispatchEvent(
-      new CustomEvent("valido", {
-        detail: { bool },
+      new CustomEvent("ruta", {
+        detail: { view },
         bubbles: true,
         composed: true,
       })
     );
-    bool = false;
   }
 
   _obtenerDatos() {

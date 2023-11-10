@@ -1,11 +1,12 @@
 import { LitElement, html, css } from "lit";
 
-import style from "./css/styles-blog";
-import "./consultar-articulos.js";
-import "./editar-articulo.js";
-import "./agregar-articulo.js";
+import style from "./dashboard-style-component";
+import "../compartidos/header-components/header-component";
+import "./consultar-components/consultar-component";
+import "./agregar-components/agregar-component";
+import "./editar-components/editar-component";
 
-export class AdministradorBlog extends LitElement {
+export class DashboardComponent extends LitElement {
   static get styles() {
     return style;
   }
@@ -19,7 +20,7 @@ export class AdministradorBlog extends LitElement {
 
   constructor() {
     super();
-    this.seleccion = "";
+    this.seleccion = "consultar";
     window.localStorage.length === 0
       ? (this.articulos = [])
       : (this.articulos = [
@@ -27,12 +28,22 @@ export class AdministradorBlog extends LitElement {
         ]);
   }
 
+  firstUpdated() {
+    this._obtenerEnlaces();
+  }
+
   render() {
     return this._mostrarHtml();
   }
 
   _mostrarHtml() {
-    return html`<main>${this._aside()} ${this._contenedor()}</main>`;
+    return html`
+      <header-component titulo="Administrador Blog Digital"></header-component>
+      <section class="contenedor">
+        ${this._aside()} ${this._contenidoPrincipal()}
+      </section>
+      <footer-component autor="Arturo Contreras"></footer-component>
+    `;
   }
 
   _aside() {
@@ -40,35 +51,32 @@ export class AdministradorBlog extends LitElement {
       <a
         class="button"
         @click="${() => (this.seleccion = "consultar")}"
-        href="#"
+        href=""
       >
         Consular artículos
       </a>
-      <a class="button" @click="${() => (this.seleccion = "agregar")}" href="#">
+      <a class="button" @click="${() => (this.seleccion = "agregar")}" href="">
         Agregar artículo
       </a>
       <a
         class="button"
         @click="${() => {
           window.localStorage.clear();
-          console.log(window.localStorage);
           this.articulos = [];
           this.articulo = {};
           this.seleccion = "";
         }}"
-        href="#"
+        href=""
       >
-        Vaciar LS </a
-      ><a class="button" @click="${this._cerrarSesion}" href="#">
-        Cerrar Sesión
+        Vaciar LS
       </a>
     </aside> `;
   }
 
-  _contenedor() {
-    return html`<section class="contenido-principal">
-      ${this._menu(this.seleccion)}
-    </section>`;
+  _contenidoPrincipal() {
+    return html`
+      <main class="contenido-principal">${this._menu(this.seleccion)}</main>
+    `;
   }
 
   _menu(valor) {
@@ -81,24 +89,23 @@ export class AdministradorBlog extends LitElement {
 
     switch (valor) {
       case "consultar":
-        return html`<consultar-articulos .articulos="${
-          this.articulos
-        }" @editar="${(e) =>
-          (this.seleccion = e.detail.seleccion)}" @eliminar="${
-          this._eliminar
-        }"></consultar-asticulos>`;
+        return html`<consultar-component
+          .articulos="${this.articulos}"
+          @editar="${(e) => (this.seleccion = e.detail.seleccion)}"
+          @eliminar="${this._eliminar}"
+        ></consultar-component>`;
         break;
       case "agregar":
-        return html`<agregar-articulo
+        return html`<agregar-component
           @agregar="${this._agregar}"
-        ></agregar-articulo>`;
+        ></agregar-component>`;
         break;
       case "editar":
-        return html`<editar-articulo
+        return html`<editar-component
           id="${id}"
           .articulo="${articulo}"
           @editar="${this._editar}"
-        ></editar-articulo>`;
+        ></editar-component>`;
         break;
     }
   }
@@ -119,14 +126,19 @@ export class AdministradorBlog extends LitElement {
 
     this.articulos[indice] = articulo;
     window.localStorage.setItem("articulos", JSON.stringify(this.articulos));
-    console.log(e.detail.seleccion);
     this.seleccion = e.detail.seleccion;
   }
 
-  _cerrarSesion() {
-    let login = false;
-    this.dispatchEvent(new CustomEvent("cerrar"));
+  //enlaces
+  _obtenerEnlaces() {
+    this.enlaces = this.shadowRoot.querySelectorAll("a");
+    this.enlaces.forEach((enlace) => {
+      enlace.addEventListener("click", this._prevenirDefault);
+    });
+  }
+  _prevenirDefault(e) {
+    e.preventDefault();
   }
 }
 
-customElements.define("administrador-blog", AdministradorBlog);
+customElements.define("dashboard-component", DashboardComponent);

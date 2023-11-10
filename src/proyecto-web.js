@@ -1,6 +1,9 @@
 import { LitElement, html, css } from "lit";
-import "./components/login-component";
-import "./components/administrador-blog";
+import "./components/login-components/login-component";
+import "./components/compartidos/header-components/header-component";
+import "./components/blog-components/blog-component";
+import "./components/compartidos/footer-components/footer-component";
+import "./rutas-component";
 
 class ProyectoWeb extends LitElement {
   static get styles() {
@@ -52,22 +55,7 @@ class ProyectoWeb extends LitElement {
   }
 
   render() {
-    return this._mostrarHtml();
-  }
-
-  _header() {
-    return html`<header><h1>Administrador Blog Digital</h1></header>`;
-  }
-
-  _mostrarHtml() {
-    return html` ${this._header()}
-    ${!this.login
-      ? html`<login-component @valido="${this._usuarioValido}">
-          <slot name="login" slot="login"></slot>
-        </login-component>`
-      : html`<administrador-blog
-          @cerrar="${this._cerrarSesion}"
-        ></administrador-blog>`}`;
+    return html`${this._mostrarHtml()}`;
   }
 
   _usuarioValido(e) {
@@ -77,6 +65,21 @@ class ProyectoWeb extends LitElement {
 
   _cerrarSesion() {
     this.login = false;
+  }
+
+  _mostrarHtml() {
+    return html`<rutas-component>
+      <slot name="login" slot="login"></slot
+    ></rutas-component> `;
+
+    //   return html` ${this._header()}
+    //   ${!this.login
+    //     ? html`<login-component @valido="${this._usuarioValido}">
+    //         <slot name="login" slot="login"></slot>
+    //       </login-component>`
+    //     : html`<administrador-blog
+    //         @cerrar="${this._cerrarSesion}"
+    //       ></administrador-blog>`}`;
   }
 }
 

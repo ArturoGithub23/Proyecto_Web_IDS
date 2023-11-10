@@ -1,28 +1,10 @@
 import { LitElement, html, css } from "lit";
 
-import style from "./css/styles-blog";
+import style from "./consultar-style-component";
 
-export class ConsultarArticulos extends LitElement {
+export class ConsultarComponent extends LitElement {
   static get styles() {
-    return [
-      style,
-      css`
-        :host {
-          width: 100%;
-          heigth: 100%;
-        }
-        img {
-          height: 300px;
-        }
-        .null {
-          display: block;
-          font-size: 30px;
-          text-align: center;
-          margin: 30px;
-          font-weight: bold;
-        }
-      `,
-    ];
+    return [style];
   }
 
   static get properties() {
@@ -37,9 +19,10 @@ export class ConsultarArticulos extends LitElement {
     this.articulos = [];
     this.articulo = {};
     this.dispatchEvent;
-    window.onbeforeunload = function (e) {
-      return alert("You have some unsaved changes");
-    };
+  }
+
+  firstUpdated() {
+    this._obtenerEnlaces();
   }
 
   render() {
@@ -85,7 +68,7 @@ export class ConsultarArticulos extends LitElement {
                       <td>${articulo.autor}</td>
                       <td class="articulo">
                         <a
-                          href="#"
+                          href=""
                           title="Click para mostrar contenido"
                           @click="${this._mostrarContenido}"
                         >
@@ -98,7 +81,7 @@ export class ConsultarArticulos extends LitElement {
                           : articulo.fecha}
                       </td>
                       <td class="opciones">
-                        <a href="#" @click="${this._editarArticulo}" id="edit">
+                        <a href="" @click="${this._editarArticulo}" id="edit">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             data-name="Layer 1"
@@ -114,7 +97,7 @@ export class ConsultarArticulos extends LitElement {
                           </svg>
                         </a>
                         <a
-                          href="#"
+                          href=""
                           @click="${this._eliminarArticulo}"
                           data-id="${articulo.id}"
                         >
@@ -161,31 +144,34 @@ export class ConsultarArticulos extends LitElement {
 
   _renderizarContenido(articulo) {
     return html`
-      <article>
-        <section class="contenido-articulo">
-          <h4>
-            Tema:
-            ${articulo.contenido.tema === ""
-              ? "Agregar un tema"
-              : articulo.contenido.tema}
-          </h4>
-          <p>${articulo.contenido.texto}</p>
-          <p>
-            Palabras clave:
-            ${articulo.contenido.palabrasClave === ""
-              ? "Agregar palabras clave"
-              : articulo.contenido.palabrasClave}
-          </p>
+      <article class="articulo-consultar">
+        <section class="articulo-imagen">
+          <img src="${articulo.contenido.imagen}" alt="${articulo.titulo}" />
         </section>
-        <section class="contenido-imagen">
-          <img
-            src="${articulo.contenido.imagenActualizada !== ""
-              ? articulo.contenido.imagenActualizada
-              : articulo.contenido.imagen}"
-            alt="Imagen del artículo"
-          />
-        </section>
-      </article>
+        <section class="articulo-contenido">
+          <section class="titulo">
+            <h3 class="no-margen">Titulo: ${articulo.titulo}</h3>
+          </section>
+          <section class="fecha">${
+            articulo.fechaActualizacion !== ""
+              ? html`<p>
+                  <span>Última actualización:</span
+                  >${articulo.fechaActualizacion}
+                </p>`
+              : html`<p>
+                  <span>Fecha de publicación:</span> ${articulo.fecha}
+                </p>`
+          }</section>
+          <section class="scroll">
+            <p>${articulo.contenido.texto}</p>
+          </section>
+          <p><span>Autor:</span> ${articulo.autor} </p></p>
+          <p><span>Tema:</span> ${articulo.contenido.tema} </p>
+        <section class="tags">${articulo.contenido.palabrasClave.map((tag) => {
+          return html`<span class="tag">${tag}</span>`;
+        })}</section>
+          </section>
+        </article>
     `;
   }
 
@@ -211,7 +197,6 @@ export class ConsultarArticulos extends LitElement {
     );
   }
   _eliminarArticulo(e) {
-    console.log(this.articulos);
     let id;
     if (e.target.tagName === "A") {
       id = e.target.dataset.id;
@@ -237,6 +222,18 @@ export class ConsultarArticulos extends LitElement {
       window.localStorage.clear();
     }
   }
+
+  //enlaces
+  _obtenerEnlaces() {
+    this.enlaces = this.shadowRoot.querySelectorAll("a");
+    this.enlaces.forEach((enlace) => {
+      enlace.addEventListener("click", this._prevenirDefault);
+    });
+  }
+
+  _prevenirDefault(e) {
+    e.preventDefault();
+  }
 }
 
-customElements.define("consultar-articulos", ConsultarArticulos);
+customElements.define("consultar-component", ConsultarComponent);
