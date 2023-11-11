@@ -11,18 +11,12 @@ export class HeaderComponent extends LitElement {
     return {
       titulo: { type: String },
       usuario: { type: Object },
-      login: { type: Boolean },
-      modo: { type: String },
-      enlaces: { state: true },
     };
   }
 
   constructor() {
     super();
     this.titulo = "";
-    window.sessionStorage.length === 0
-      ? (this.usuario = [])
-      : (this.usuario = JSON.parse(window.sessionStorage.getItem("usuario")));
   }
 
   firstUpdated() {
@@ -42,7 +36,10 @@ export class HeaderComponent extends LitElement {
         ? html`<section class="usuario">
             <section class="imagen">
               ${this.usuario.imagen !== undefined
-                ? html`<img src="" alt="imagen-usuario" />`
+                ? html`<img
+                    src="${this.usuario.imagen}"
+                    alt="imagen-usuario"
+                  />`
                 : html` <svg
                     xmlns="http://www.w3.org/2000/svg"
                     id="Layer_1"
@@ -56,7 +53,7 @@ export class HeaderComponent extends LitElement {
             </section>
             <section class="nombre-usuario">
               <span class="redireccionar" @click="${this._cambioRuta}"
-                >${this.usuario.nombre + " " + this.usuario.apellido}</span
+                >${this.usuario.email}</span
               >
             </section>
             <section>
@@ -94,7 +91,9 @@ export class HeaderComponent extends LitElement {
 
   _cambioRuta() {
     let view;
-    this.titulo === "Mi Blog Digital" ? (view = "admin") : (view = "inicio");
+    this.titulo === "Mi Blog Digital"
+      ? (view = "/dashboard")
+      : (view = "/inicio");
     this.dispatchEvent(
       new CustomEvent("ruta", {
         detail: { view },
@@ -111,8 +110,15 @@ export class HeaderComponent extends LitElement {
   }
 
   _cerrarSesion() {
+    this.dispatchEvent(
+      new CustomEvent("cerrar", {
+        detail: false,
+        bubbles: true,
+        composed: true,
+      })
+    );
     window.sessionStorage.clear();
-    let view = "inicio";
+    let view = "/inicio";
     this.usuario = [];
     this.dispatchEvent(
       new CustomEvent("ruta", {
@@ -124,7 +130,7 @@ export class HeaderComponent extends LitElement {
   }
 
   _event() {
-    let view = "login";
+    let view = "/login";
     this.dispatchEvent(
       new CustomEvent("ruta", {
         detail: { view },

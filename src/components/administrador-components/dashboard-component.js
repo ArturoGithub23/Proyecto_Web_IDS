@@ -15,11 +15,13 @@ export class DashboardComponent extends LitElement {
     return {
       articulos: { type: Array },
       seleccion: { type: String },
+      usuario: { type: Object },
     };
   }
 
   constructor() {
     super();
+    this.usuario = {};
     this.seleccion = "consultar";
     window.localStorage.length === 0
       ? (this.articulos = [])
@@ -38,7 +40,11 @@ export class DashboardComponent extends LitElement {
 
   _mostrarHtml() {
     return html`
-      <header-component titulo="Administrador Blog Digital"></header-component>
+      <header-component
+        titulo="Administrador Blog Digital"
+        .usuario=${this.usuario}
+        @cerrar="${this._cerrar}"
+      ></header-component>
       <section class="contenedor">
         ${this._aside()} ${this._contenidoPrincipal()}
       </section>
@@ -127,6 +133,16 @@ export class DashboardComponent extends LitElement {
     this.articulos[indice] = articulo;
     window.localStorage.setItem("articulos", JSON.stringify(this.articulos));
     this.seleccion = e.detail.seleccion;
+  }
+
+  _cerrar() {
+    this.dispatchEvent(
+      new CustomEvent("cerrar", {
+        detail: false,
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   //enlaces

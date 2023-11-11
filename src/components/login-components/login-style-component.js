@@ -12,12 +12,19 @@ export default css`
     height: 100%;
     min-height: 50px;
   }
-  p {
+  .usuario-true {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .usuario-true p {
+    font-size: 20px;
     margin: 0 0 8px 0;
     text-align: center;
-    font-size: small;
     background-color: red;
-    padding: 5px;
+    padding: 10px;
     color: white;
   }
   .login {

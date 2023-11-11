@@ -7,80 +7,72 @@ import "./components/administrador-components/dashboard-component.js";
 export class RutasComponent extends LitElement {
   static get propierties() {
     return {
-      paths: { type: Array },
-      path: { type: String },
-      href: { type: String },
+      ruta: { type: String },
       usuario: { type: Object },
     };
   }
 
   constructor() {
     super();
-    this.paths = [
-      {
-        nombre: "inicio",
-        path: "/inicio",
-        template: html`<blog-component></blog-component>`,
-      },
-      {
-        nombre: "login",
-        path: "/login",
-        template: html`<login-component>
-          <slot name="login" slot="login"></slot>
-        </login-component> `,
-      },
-      {
-        nombre: "admin",
-        path: "/dashboard",
-        template: html`<dashboard-component></dashboard-component>`,
-      },
-      {
-        nombre: "consultar",
-        path: "/consultar-articulo",
-        template: html`<consultar-component></consultar-component>`,
-      },
-    ];
-    this.path = "/";
-    window.sessionStorage.length === 0
-      ? (this.usuario = {})
-      : (this.usuario = JSON.parse(window.sessionStorage.getItem("usuario")));
+    this.ruta = "/inicio";
+    window.sessionStorage.length === 1
+      ? (this.usuario = JSON.parse(window.sessionStorage.getItem("usuario")))
+      : (this.usuario = {});
   }
 
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener("ruta", (e) => this._cambiarVista(e));
-    window.addEventListener("popstate", (e) => this._cambioUrl(e));
+    window.addEventListener("popstate", (e) => {
+      this.ruta = e.target.location.pathname;
+      this.requestUpdate();
+    });
     this.addEventListener("dashboard", (e) => this._urlDashboard(e));
   }
 
   render() {
-    return html`${this._mostrarHtml()}`;
+    return html`${this._rutas()}`;
   }
 
-  _mostrarHtml() {
-    if (this.path === "/" || this.path === "/inicio") {
-      this.path = "inicio";
+  _rutas() {
+    console.log(this.usuario);
+    switch (this.ruta) {
+      case "/inicio":
+        window.history.pushState({}, "", this.ruta);
+        return html`<blog-component
+          .usuario="${this.usuario}"
+          @cerrar="${this._cerrar}"
+        ></blog-component>`;
+      case "/login":
+        window.history.pushState({}, "", this.ruta);
+        return html`<login-component
+          @login="${this._loginGoogle}"
+          .usuario="${this.usuario}"
+        >
+          <slot name="login" slot="login"></slot>
+        </login-component> `;
+      case "/dashboard":
+        window.history.pushState({}, "", this.ruta);
+        return html`<dashboard-component
+          .usuario="${this.usuario}"
+          @cerrar="${this._cerrar}"
+        ></dashboard-component>`;
     }
-
-    if (Object.keys(this.usuario).length > 0 && this.path === "login") {
-      this.path = "admin";
-    }
-    let path = this.paths.find((ruta) => ruta.nombre === this.path);
-    window.history.pushState({}, "", path.path);
-    return path.template;
   }
+
+  _cerrar() {
+    this.usuario = {};
+    console.log(this.usuario);
+  }
+
   _cambiarVista(e) {
-    this.path = e.detail.view;
-    this.update();
+    this.ruta = e.detail.view;
+    this.requestUpdate();
   }
-  _cambioUrl(e) {
-    if (Object.keys(this.usuario).length > 0) {
-      this.path = e.target.location.pathname.substr(1);
-      this.update();
-    } else {
-      this.path = "inicio";
-      this.update();
-    }
+
+  _loginGoogle(e) {
+    this.usuario = e.detail.usuario;
+    window.sessionStorage.setItem("usuario", JSON.stringify(this.usuario));
   }
 }
 

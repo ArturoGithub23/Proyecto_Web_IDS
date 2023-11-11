@@ -1,4 +1,5 @@
 import { LitElement, css, html } from "lit";
+import * as JWT from "jose";
 
 import style from "./login-style-component";
 export class LoginComponent extends LitElement {
@@ -10,18 +11,18 @@ export class LoginComponent extends LitElement {
     return {
       error: { type: String },
       datos: { type: Array },
-      google_id: { type: String },
+      usuario: { type: Object },
     };
   }
 
   constructor() {
     super();
+    this.usuario = {};
     this.addEventListener("datos", (e) => {
       this._obtenerDatos(e);
     });
     this.error = "";
     this.datos = [];
-    this.google_id = "";
     this.addEventListener("google", (e) => this._validarGoogle(e));
   }
 
@@ -34,24 +35,33 @@ export class LoginComponent extends LitElement {
   }
 
   _mostrarHtml() {
+    console.log(this.usuario);
     return html`
       <section class="login">
-        <form class="formulario" action="#">
-          <legend class="titulo">Bienvenido</legend>
-          ${this.error.length !== "" ? this.error : null}
-          <label>Email</label>
-          <input type="email" id="email" />
-          <label>Password</label>
-          <input type="password" maxlength="16" id="password" />
-          <input
-            class="btn"
-            type="button"
-            @click="${this._login}"
-            value="Login"
-          />
-        </form>
-        <br />
-        <slot name="login" @click="${this._imprimir}"></slot>
+        ${Object.keys(this.usuario).length > 0
+          ? html`<section class="usuario-true">
+              <p>
+                Sesión iniciada con el usuario
+                <span>${this.usuario.email}</span> redireccionando al Blog.
+              </p>
+              ${this._cuentaRegresiva()}
+            </section>`
+          : html` <form class="formulario" action="#">
+                <legend class="titulo">Bienvenido</legend>
+                ${this.error.length !== "" ? this.error : null}
+                <label>Email</label>
+                <input type="email" id="email" />
+                <label>Password</label>
+                <input type="password" maxlength="16" id="password" />
+                <input
+                  class="btn"
+                  type="button"
+                  @click="${this._login}"
+                  value="Login"
+                />
+              </form>
+              <br />
+              <slot name="login" @click="${this._imprimir}"></slot>`}
       </section>
     `;
   }
@@ -91,9 +101,19 @@ export class LoginComponent extends LitElement {
   }
 
   _loginValido(usuario) {
-    let usr = { nombre: usuario.nombre, apellido: usuario.apellido };
-    window.sessionStorage.setItem("usuario", JSON.stringify(usr));
-    let view = "admin";
+    usuario = { email: usuario.email, imagen: usuario.picture };
+
+    this.usuario = usuario;
+
+    this.dispatchEvent(
+      new CustomEvent("login", {
+        detail: { usuario },
+        bubbles: true,
+        composed: true,
+      })
+    );
+
+    let view = "/dashboard";
     this.dispatchEvent(
       new CustomEvent("ruta", {
         detail: { view },
@@ -120,15 +140,47 @@ export class LoginComponent extends LitElement {
       });
   }
 
-  _imprimir(e) {
-    console.log(e);
+  _validarGoogle(e) {
+    let respuesta = JWT.decodeJwt(e.detail.datos.credential);
+    console.log(respuesta.picture);
+
+    let usuario = {
+      email: respuesta.email,
+      imagen: respuesta.picture,
+    };
+
+    this.usuario = usuario;
+
+    this.dispatchEvent(
+      new CustomEvent("login", {
+        detail: { usuario },
+        bubbles: true,
+        composed: true,
+      })
+    );
+
+    let view = "/dashboard";
+    this.dispatchEvent(
+      new CustomEvent("ruta", {
+        detail: { view },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
-  _validarGoogle(e) {
-    console.log(e.detail.datos);
-    let credencial = e.detail.datos;
-
-    console.log(atob(credencial));
+  _cuentaRegresiva() {
+    let setInter = setInterval(() => {
+      clearInterval(setInter);
+      let view = "/inicio";
+      this.dispatchEvent(
+        new CustomEvent("ruta", {
+          detail: { view },
+          bubbles: true,
+          composed: true,
+        })
+      );
+    }, 5000);
   }
 }
 

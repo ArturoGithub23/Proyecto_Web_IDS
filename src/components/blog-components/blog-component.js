@@ -10,6 +10,7 @@ export class BlogComponent extends LitElement {
   static get properties() {
     return {
       articulos: { type: Array },
+      usuario: { type: Object },
     };
   }
 
@@ -20,6 +21,7 @@ export class BlogComponent extends LitElement {
       : (this.articulos = [
           ...JSON.parse(window.localStorage.getItem("articulos")),
         ]);
+    this.usuario = {};
   }
 
   render() {
@@ -27,7 +29,12 @@ export class BlogComponent extends LitElement {
   }
 
   _mostrarHtml() {
-    return html`<header-component titulo="Mi Blog Digital"></header-component>
+    if (this.usuario === undefined) this.usuario = {};
+    return html`<header-component
+        titulo="Mi Blog Digital"
+        .usuario="${this.usuario}"
+        @cerrar="${this.cerrar}"
+      ></header-component>
       ${this._barra()}
       ${window.localStorage.length === 0
         ? html`<section class="vacio"><h2>Sin artículos</h2></section>`
@@ -82,6 +89,12 @@ export class BlogComponent extends LitElement {
       </main>
       ${this._asideContenido()}
     </section>`;
+  }
+
+  _cerrar() {
+    this.dispatchEvent(
+      new CustomEvent("cerrar", { bubbles: true, composed: true })
+    );
   }
 
   _asideContenido() {
