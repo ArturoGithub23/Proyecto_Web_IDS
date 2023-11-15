@@ -60,33 +60,8 @@ export class HeaderComponent extends LitElement {
               <a href="" @click="${this._cerrarSesion}">Cerrar Sesión</a>
             </section>
           </section>`
-        : html`${this._btnBuscar()} ${this._iniciarSesión()}`}
+        : html`${this._iniciarSesión()}`}
     </header>`;
-  }
-
-  //Funciones para buscar un artículo
-  _btnBuscar() {
-    return html`
-      <section class="buscar">
-        <input
-          @keypress="${this._buscarArticuloKey}"
-          id="entrada_buscar"
-          type="text"
-          placeholder="Buscar artículo"
-          minlength="6"
-          maxlength="15"
-        />
-        <button @click="${this._buscarArticuloBtn}">Buscar</button>
-      </section>
-    `;
-  }
-  _buscarArticuloKey(e) {
-    if (e.key === "Enter") {
-      console.log("enter");
-    }
-  }
-  _buscarArticuloBtn(e) {
-    console.log(e.target.previousElementSibling.value);
   }
 
   _cambioRuta() {

@@ -35,7 +35,6 @@ export class RutasComponent extends LitElement {
   }
 
   _rutas() {
-    console.log(this.usuario);
     switch (this.ruta) {
       case "/inicio":
         window.history.pushState({}, "", this.ruta);
@@ -62,7 +61,6 @@ export class RutasComponent extends LitElement {
 
   _cerrar() {
     this.usuario = {};
-    console.log(this.usuario);
   }
 
   _cambiarVista(e) {

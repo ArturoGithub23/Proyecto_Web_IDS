@@ -35,7 +35,6 @@ export class LoginComponent extends LitElement {
   }
 
   _mostrarHtml() {
-    console.log(this.usuario);
     return html`
       <section class="login">
         ${Object.keys(this.usuario).length > 0
@@ -142,7 +141,6 @@ export class LoginComponent extends LitElement {
 
   _validarGoogle(e) {
     let respuesta = JWT.decodeJwt(e.detail.datos.credential);
-    console.log(respuesta.picture);
 
     let usuario = {
       email: respuesta.email,

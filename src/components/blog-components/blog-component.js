@@ -1,4 +1,5 @@
 import { LitElement, css, html } from "lit";
+import "../buscador-components/buscador-component";
 
 import style from "./blog-style-component";
 
@@ -11,11 +12,13 @@ export class BlogComponent extends LitElement {
     return {
       articulos: { type: Array },
       usuario: { type: Object },
+      buscar: { type: Array },
     };
   }
 
   constructor() {
     super();
+    this.buscar = [];
     window.localStorage.length === 0
       ? (this.articulos = [])
       : (this.articulos = [
@@ -37,8 +40,11 @@ export class BlogComponent extends LitElement {
       ></header-component>
       ${this._barra()}
       ${window.localStorage.length === 0
-        ? html`<section class="vacio"><h2>Sin artículos</h2></section>`
-        : this._contenidoPrincipal()}
+        ? html` <section class="vacio"><h2>Sin artículos</h2></section>`
+        : html`<buscador-component
+              @buscar="${this._buscar}"
+            ></buscador-component>
+            ${this._contenidoPrincipal()}`}
       <footer-component autor="Arturo Contreras"></footer-component>`;
   }
 
@@ -54,8 +60,9 @@ export class BlogComponent extends LitElement {
   _contenidoPrincipal() {
     return html`<section class="contenedor">
       <main class="contenedor-principal">
-        ${this.articulos.map((articulo) => {
-          return html`<article class="entrada">
+        ${this.buscar.length > 0
+          ? this.buscar.map((articulo) => {
+              return html`<article class="entrada">
             <section class="titulo">
               <h3 class="no-margen">Titulo: ${articulo.titulo}</h3>
             </section>
@@ -85,7 +92,39 @@ export class BlogComponent extends LitElement {
           )}</section>
           </section>
         </article>`;
-        })}
+            })
+          : this.articulos.map((articulo) => {
+              return html`<article class="entrada">
+            <section class="titulo">
+              <h3 class="no-margen">Titulo: ${articulo.titulo}</h3>
+            </section>
+            <section class="fecha">
+              ${
+                articulo.fechaActualizacion !== ""
+                  ? html`<p>
+                      <span>Última actualización:</span
+                      >${articulo.fechaActualizacion}
+                    </p>`
+                  : html`<p>
+                      <span>Fecha de publicación:</span> ${articulo.fecha}
+                    </p>`
+              }
+            </section>
+          <section class="entrada-imagen">
+            <img src="${articulo.contenido.imagen}" alt="${articulo.titulo}" />
+          </section>
+          <section class="entrada-contenido">
+            <p><span>Autor:</span> ${articulo.autor} </p></p>
+            <p><span>Tema:</span> ${articulo.contenido.tema} </p>
+          <a class="btn" data-id="${articulo.id}">Leer Artículo</a>
+          <section class="tags">${articulo.contenido.palabrasClave.map(
+            (tag) => {
+              return html`<span class="tag">${tag}</span>`;
+            }
+          )}</section>
+          </section>
+        </article>`;
+            })}
       </main>
       ${this._asideContenido()}
     </section>`;
@@ -104,7 +143,7 @@ export class BlogComponent extends LitElement {
           return html`
             <article class="articulo-aside">
               <h4 class="encabezado-aside">${articulo.titulo}</h4>
-              <section class="aside-imagen" wi>
+              <section class="aside-imagen">
                 <img src="${articulo.contenido.imagen}" />
               </section>
               <section class="aside-contenido"></section>
@@ -116,6 +155,36 @@ export class BlogComponent extends LitElement {
         })}
       </section>
     </aside>`;
+  }
+
+  _buscar(e) {
+    this.buscar = [];
+    let palabra = e.detail.entrada;
+    this.articulos.forEach((articulo) => {
+      if (articulo.titulo.includes(palabra)) {
+        this.buscar.push(articulo);
+        return;
+      }
+
+      if (articulo.autor.includes(palabra)) {
+        this.buscar.push(articulo);
+        return;
+      }
+
+      if (articulo.contenido.tema.includes(palabra)) {
+        this.buscar.push(articulo);
+        return;
+      }
+
+      articulo.contenido.palabrasClave.forEach((tag) => {
+        if (tag.includes(palabra)) {
+          this.buscar.push(articulo);
+          return;
+        }
+      });
+    });
+
+    this.requestUpdate();
   }
 }
 
