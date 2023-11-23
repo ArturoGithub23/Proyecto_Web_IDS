@@ -69,8 +69,8 @@ class ProyectoWeb extends LitElement {
 
   _mostrarHtml() {
     return html`<rutas-component>
-      <slot name="login" slot="login"></slot
-    ></rutas-component> `;
+      <slot name="login" slot="login"></slot>
+    </rutas-component> `;
 
     //   return html` ${this._header()}
     //   ${!this.login

@@ -28,6 +28,8 @@ export class HeaderComponent extends LitElement {
   }
 
   _mostrarHtml() {
+    console.log(this.usuario);
+    if (this.usuario === null) this.usuario = {};
     return html` <header>
       <section class="cabecera">
         <h1>${this.titulo}</h1>
@@ -92,7 +94,7 @@ export class HeaderComponent extends LitElement {
         composed: true,
       })
     );
-    window.sessionStorage.clear();
+    window.localStorage.removeItem("usuario");
     let view = "/inicio";
     this.usuario = [];
     this.dispatchEvent(

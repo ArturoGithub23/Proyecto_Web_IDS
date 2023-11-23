@@ -19,12 +19,11 @@ export class BlogComponent extends LitElement {
   constructor() {
     super();
     this.buscar = [];
-    window.localStorage.length === 0
+    window.localStorage.getItem("articulos") !== undefined
       ? (this.articulos = [])
       : (this.articulos = [
           ...JSON.parse(window.localStorage.getItem("articulos")),
         ]);
-    this.usuario = {};
   }
 
   render() {
@@ -39,7 +38,7 @@ export class BlogComponent extends LitElement {
         @cerrar="${this.cerrar}"
       ></header-component>
       ${this._barra()}
-      ${window.localStorage.length === 0
+      ${window.localStorage.getItem("articulos") !== undefined
         ? html` <section class="vacio"><h2>Sin artículos</h2></section>`
         : html`<buscador-component
               @buscar="${this._buscar}"

@@ -219,7 +219,7 @@ export class AgregarComponent extends LitElement {
       this._showToast(error);
     } else {
       let id;
-      if (window.localStorage.length === 0) {
+      if (window.localStorage.getItem("articulos") !== undefined) {
         id = Math.floor(Math.random() * 100);
       } else {
         let articulos = [

@@ -15,8 +15,9 @@ export class RutasComponent extends LitElement {
   constructor() {
     super();
     this.ruta = "/inicio";
-    window.sessionStorage.length === 1
-      ? (this.usuario = JSON.parse(window.sessionStorage.getItem("usuario")))
+    window.localStorage.getItem("usuario") !== null ||
+    window.localStorage.getItem("usuario") !== undefined
+      ? (this.usuario = JSON.parse(window.localStorage.getItem("usuario")))
       : (this.usuario = {});
   }
 
@@ -45,7 +46,7 @@ export class RutasComponent extends LitElement {
       case "/login":
         window.history.pushState({}, "", this.ruta);
         return html`<login-component
-          @login="${this._loginGoogle}"
+          @login="${this._login}"
           .usuario="${this.usuario}"
         >
           <slot name="login" slot="login"></slot>
@@ -61,6 +62,9 @@ export class RutasComponent extends LitElement {
 
   _cerrar() {
     this.usuario = {};
+    FB.logout(function (response) {
+      console.log("Cerrando cesión FaceBook");
+    });
   }
 
   _cambiarVista(e) {
@@ -68,9 +72,9 @@ export class RutasComponent extends LitElement {
     this.requestUpdate();
   }
 
-  _loginGoogle(e) {
+  _login(e) {
     this.usuario = e.detail.usuario;
-    window.sessionStorage.setItem("usuario", JSON.stringify(this.usuario));
+    window.localStorage.setItem("usuario", JSON.stringify(this.usuario));
   }
 }
 

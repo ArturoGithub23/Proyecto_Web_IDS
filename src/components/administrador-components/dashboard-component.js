@@ -23,7 +23,7 @@ export class DashboardComponent extends LitElement {
     super();
     this.usuario = {};
     this.seleccion = "consultar";
-    window.localStorage.length === 0
+    window.localStorage.getItem("articulos") !== undefined
       ? (this.articulos = [])
       : (this.articulos = [
           ...JSON.parse(window.localStorage.getItem("articulos")),

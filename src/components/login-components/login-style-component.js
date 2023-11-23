@@ -29,8 +29,8 @@ export default css`
   }
   .login {
     display: block;
-    width: 330px;
-    height: 400px;
+    width: 320px;
+    height: 450px;
     margin: 50px auto;
     border: 1px solid white;
     border-radius: 10px;
@@ -69,5 +69,27 @@ export default css`
     padding: 10px;
     border: none;
     font-weight: bold;
+  }
+
+  .btn_facebook {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    justify-content: space-around;
+    width: 100%;
+    background-color: white;
+    border: none;
+    border-radius: 3px;
+    font-family: "Google Sans", arial, sans-serif;
+    font-weight: 500;
+    color: #3c4043;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .error {
+    font-size: small;
+    background-color: red;
+    color: white;
+    margin: 0 auto 10px;
   }
 `;
